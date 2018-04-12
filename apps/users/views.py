@@ -18,10 +18,11 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
 from MxShop.settings import APIKEY
+from apps.users.models import VerifyCode
 from apps.users.serializers import SmsSerializer, UserRegSerializer, UserDetailSerializer
 from apps.utils.yunpian import YunPian
 
-from .models import VerifyCode
+
 
 User = get_user_model()
 

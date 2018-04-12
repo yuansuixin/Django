@@ -54,24 +54,24 @@ INSTALLED_APPS = [
     'rest_framework',
     # 不要忘记注册
     'django_filters',
+    # 跨域问题
     'corsheaders',
     'rest_framework.authtoken',
     # 集成了第三方登录，可以自动生成表
-    # 'social_django',
-
+    'social_django',
 ]
-
 
 MIDDLEWARE = [
     # 浏览器的跨域问题
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'MxShop.urls'
@@ -88,13 +88,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 第三方登录
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'MxShop.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -110,9 +112,9 @@ DATABASES = {
         'PORT': '3306',
         # 第三方登录的时候用到
         # 'OPTIONS':{'init_command':'SET storage_engine=INNODB;'},
+        "OPTIONS": {"init_command": "SET default_storage_engine=INNODB;"}
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -132,7 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -146,9 +147,21 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+
+# 自定义
+
+
+AUTHENTICATION_BACKENDS = {
+    'users.views.CustomBackend',
+    # 第三方登录
+    'social_core.backends.weibo.WeiboOAuth2',
+    # 'social_core.backends.qq.QQOAuth2',
+    # 'social_core.backends.weixin.WeixinOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+}
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -180,19 +193,27 @@ JWT_AUTH = {
 }
 
 # 手机号码正则表达式
-REGEX_MOBILE = "^1[358]\d{9}$|^147\d{8}$|^176\d{8}$"
+REGEX_MOBILE = "^1[3578]\d{9}$|^147\d{8}$|^176\d{8}$"
 
 # 云片网设置
 APIKEY = "10fc35cb5ab824725ea1135c50154595"
 
 # 设置缓存的失效时间，缓存到内存中
-REST_FRAMEWORK_EXTENSIONS={
-    'DEFAULT_CACHE_RESPONSE_TIMEOUT':5,
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 5,
 }
 
 # 支付宝相关配置
 private_key_path = os.path.join(BASE_DIR, 'apps/trade/keys/private_2048.txt')
 ali_pub_key_path = os.path.join(BASE_DIR, 'apps/trade/keys/alipay_key_2048.txt')
+
+# 微博登陆
+SOCIAL_AUTH_WEIBO_KEY = '2113796513'
+SOCIAL_AUTH_WEIBO_SECRET = '9292dde7cc66450d7bc1a933fc800e88'
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8080'
+# SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'
+
 
 # redis缓存的配置
 # CACHES = {

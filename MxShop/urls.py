@@ -78,7 +78,7 @@ urlpatterns = [
     # drf自带的token认证模式
     url(r'^api-token-auth/', views.obtain_auth_token),
     #     jwt的认证接口
-    url(r'login/', obtain_jwt_token),
+    url(r'login/$', obtain_jwt_token),
     # url(r'login/$', obtain_jwt_token),
     url(r'^alipay/return/', AlipayView.as_view(),name='alipay'),
 

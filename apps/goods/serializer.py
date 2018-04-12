@@ -71,25 +71,25 @@ class IndexCategorySerializer(serializers.ModelSerializer):
     def get_ad_goods(self, obj):
         goods_json = {}
         ad_goods = IndexAd.objects.all().filter(category_id=obj.id, )
-        print(obj.id)
-        print('obj', obj, type(obj))
-        print('ad_goods', ad_goods)
+        # print(obj.id)
+        # print('obj', obj, type(obj))
+        # print('ad_goods', ad_goods)
         if ad_goods:
             goods_ins = ad_goods[0].goods
             print('goods_ins', goods_ins)
             # context={'request': self.context['request']})是为了加上域名，只有Serializer嵌套的时候使用
             goods_json = GoodsSerializer(goods_ins, many=False, context={'request': self.context['request']}).data
-        print('goods_json', goods_json)
+        # print('goods_json', goods_json)
         return goods_json
 
     # obj就是当前对象
     def get_goods(self, obj):
-        print(obj)
-        print('obj_id',obj.id)
+        # print(obj)
+        # print('obj_id',obj.id)
         all_goods = Goods.objects.filter(Q(category_id=obj.id) | Q(category__parent_category_id=obj.id) | Q(
             category__parent_category__parent_category_id=obj.id))
         goods_serializer = GoodsSerializer(instance=all_goods, many=True, context={'request': self.context['request']})
-        print('goods_serializer.data',goods_serializer.data)
+        # print('goods_serializer.data',goods_serializer.data)
         # 序列化之后的json格式的数据
         return goods_serializer.data
 
